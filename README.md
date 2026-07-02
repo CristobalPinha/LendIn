@@ -19,6 +19,7 @@
 - [API REST](#api-rest)
 - [Tests](#tests)
 - [Instalación](#instalación)
+- [Despliegue en AWS](#despliegue-en-aws)
 - [Base de datos](#base-de-datos)
 - [Estructura del proyecto](#estructura-del-proyecto)
 
@@ -145,6 +146,28 @@ python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
 ```
+
+---
+
+## Despliegue en AWS
+
+Infraestructura como código con Terraform (`terraform/`): una instancia **EC2** (`t3.micro`) corre la app en Docker, conectada a una base de datos **RDS MySQL 8.0** (`db.t3.micro`) que solo acepta tráfico desde el Security Group de la EC2, nunca desde internet. Guía completa paso a paso (incluyendo creación de cuenta/usuario IAM) en [`MANUAL_DESPLIEGUE_AWS.md`](MANUAL_DESPLIEGUE_AWS.md).
+
+```bash
+cd terraform
+cp terraform.tfvars.example terraform.tfvars   # completar IP, password de DB y SECRET_KEY
+terraform init
+terraform plan
+terraform apply
+```
+
+Ajustes que fueron necesarios sobre el diseño inicial, al desplegar contra una cuenta real de AWS:
+
+| Ajuste | Motivo |
+|--------|--------|
+| `ALLOWED_HOSTS` configurable vía `DJANGO_ALLOWED_HOSTS` (`mysite/settings.py`) | Con `DEBUG=True` y `ALLOWED_HOSTS=[]`, Django solo permite `localhost` implícitamente — la IP pública de la EC2 devolvía `400 Bad Request`. La variable es opcional y no afecta local/Docker Compose/CI. |
+| `instance_type` por defecto `t3.micro` (no `t2.micro`) | AWS rechazó `t2.micro` como no elegible para el free tier de esta cuenta (`InvalidParameterCombination`); el tipo elegible varía según la antigüedad de la cuenta. |
+| Descripciones de Security Group sin tildes/ñ | La API de EC2 solo acepta ASCII en el campo `description` de un Security Group. |
 
 ---
 

@@ -16,4 +16,12 @@ Thumbs.db
 desktop.ini
 
 # Ideas - Info - ETC
-documentacion/ 
+documentacion/
+
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/*.tfvars
+terraform/*.pem
+terraform/crash.log 

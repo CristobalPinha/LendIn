@@ -1,0 +1,13 @@
+# Copia este archivo a terraform.tfvars y completa tus valores.
+# terraform.tfvars NUNCA debe subirse a git (contiene secretos).
+
+aws_region = "us-east-1"
+
+# Tu IP pública en formato CIDR. Obtenla con: curl ifconfig.me
+my_ip = "TU_IP_PUBLICA/32"
+
+# Password del usuario maestro de la RDS (mínimo 8 caracteres, sin comillas ni "/", "@", "\"", espacios)
+db_password = "CambiaEstaClave123!"
+
+# Un SECRET_KEY de Django para este despliegue (no reutilices el de tu .env local)
+secret_key = "genera-una-clave-nueva-aqui"
